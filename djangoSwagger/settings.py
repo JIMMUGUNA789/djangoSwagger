@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = [
 ]
 CREATED_APPS = [
     'users',
+    'products',
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CREATED_APPS
