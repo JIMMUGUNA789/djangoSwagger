@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -24,9 +25,9 @@ def apiOverview(request):
         'Add Product': '/product-create/',
         'Update Product': '/product-update/<str:pk>/',
         'Delete Product': '/product-delete/<str:pk>/',
-        'Search Product': '/product-search/<str:pk>/',
-        'Search by Category': '/product-search/?category=category_name/',
-        'Search by SubCategory': '/product-search/?subcategory=subcategory_name/',
+        'Search Product': '/products/<str:pk>/',
+        'Search by Category': '/products/?category=category_name/',
+        'Search by SubCategory': '/products/?subcategory=subcategory_name/',
 
     }
     return Response(category_urls)
@@ -58,6 +59,24 @@ def get_all_categories(request):
         return Response(serializer.data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['POST'])
+def update_category(request, pk):
+    category = Category.objects.get(id=pk)
+    data = CategorySerializer(instance=category, data=request.data)
+    if data.is_valid():
+        data.save()
+        return Response(data.data, status=status.HTTP_200_OK)
+    else:
+        return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_category(request, pk):
+    category = get_object_or_404(Category, id=pk)
+    category.delete()
+    return Response(status=status.HTTP_202_ACCEPTED)
+    
+
 @api_view(['POST'])
 def add_subcategory(request):
     subcategory = SubCategorySerializer(data = request.data)
@@ -86,6 +105,25 @@ def get_all_subcategories(request):
         return Response(serializer.data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+
+    
+@api_view(['POST'])
+def update_subcategory(request, pk):
+    sub_category = SubCategory.objects.get(id=pk)
+    data = SubCategorySerializer(instance=sub_category, data=request.data)
+    if data.is_valid():
+        data.save()
+        return Response(data.data, status=status.HTTP_200_OK)
+    else:
+        return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['DELETE'])
+def delete_sub_category(request, pk):
+    sub_category = get_object_or_404(SubCategory, id=pk)
+    sub_category.delete()
+    return Response(status=status.HTTP_202_ACCEPTED)
+    
 @api_view(['POST'])
 def add_product(request):
     product = ProductSerializer(data = request.data)    
@@ -112,5 +150,20 @@ def get_all_products(request):
         return Response(serializer.data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+@api_view(['POST'])
+def update_product(request, pk):
+    product = Product.objects.get(id=pk)
+    data = ProductSerializer(instance=product, data=request.data)
+    if data.is_valid():
+        data.save()
+        return Response(data.data, status=status.HTTP_200_OK)
+    else:
+        return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['DELETE'])
+def delete_product(request, pk):
+    product = get_object_or_404(Product, id=pk)
+    product.delete()
+    return Response(status=status.HTTP_202_ACCEPTED)
 
 
