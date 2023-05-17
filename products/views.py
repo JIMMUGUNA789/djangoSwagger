@@ -7,7 +7,8 @@ from .models import Category, SubCategory, Product
 from .serializers import CategorySerializer, SubCategorySerializer, ProductSerializer
 from rest_framework import serializers
 from rest_framework import status
-
+from rest_framework import generics 
+from rest_framework.reverse import reverse
 @api_view(['GET'])
 def apiOverview(request):
     category_urls = {
@@ -166,4 +167,39 @@ def delete_product(request, pk):
     product.delete()
     return Response(status=status.HTTP_202_ACCEPTED)
 
+# browsable api
+class ApiRoot(generics.GenericAPIView):
+    name = 'api-root'
+    def get(self, request, *args, **kwargs):
+        return Response({
+            'category':reverse(CategoryList.name, request=request),
+            'subcategory':reverse(SubCategoryList.name, request=request),
+            'product':reverse(ProductList.name, request=request),
+        })
+
+class CategoryList(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    name = 'category-list'
+
+class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    name = 'category-detail'
+class SubCategoryList(generics.ListCreateAPIView):
+    queryset = SubCategory.objects.all()
+    serializer_class = SubCategorySerializer
+    name = 'subcategory-list'
+class SubCategoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SubCategory.objects.all()
+    serializer_class = SubCategorySerializer
+    name = 'subcategory-detail'
+class ProductList(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    name = 'product-list'
+class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    name = 'product-detail'
 
