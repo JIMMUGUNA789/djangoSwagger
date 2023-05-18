@@ -9,6 +9,9 @@ from rest_framework import serializers
 from rest_framework import status
 from rest_framework import generics 
 from rest_framework.reverse import reverse
+
+
+# Non Browseable API Views
 @api_view(['GET'])
 def apiOverview(request):
     category_urls = {
